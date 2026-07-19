@@ -3,6 +3,8 @@ import { userRouter } from './routers/user.router.js';
 
 const app: Express = express();
 
+app.use(express.json());
+
 app.get('/helth', (_req, res) => {
     res.json({
         status: 'ok',

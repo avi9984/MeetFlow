@@ -14,3 +14,16 @@ export async function findById(id: number) {
     });
     return user;
 }
+
+export async function create(payload: any) {
+    const user = await prisma.user.findUnique({
+        where: {
+            email: payload.email
+        }
+    })
+    if (user) {
+        throw new Error('User already exist')
+    }
+    const createdUser = await prisma.user.create({ data: payload });
+    return createdUser
+}
