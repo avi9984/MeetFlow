@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import { userRouter } from './routers/user.router.js';
+import { errorHandler } from './middlewares/error-handler.js';
 
 const app: Express = express();
 
@@ -13,6 +14,8 @@ app.get('/helth', (_req, res) => {
 })
 
 app.use('/api/users', userRouter);
+
+app.use(errorHandler);
 
 
 export { app };
