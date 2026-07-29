@@ -13,11 +13,32 @@ datasource db {
 }
 
 model User {
-  id        Int       @id  @default(autoincrement())
-  email     String    @unique
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
   name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  eventTypes EventType[]
 
   @@map("users")
+}
+
+model EventType {
+  id                  Int      @id @default(autoincrement())
+  hostId              Int
+  title               String
+  description         String?
+  durationMinutus     Int
+  isActive            Boolean  @default(true)
+  locationType        String   @default("Online")
+  locationValue       String?
+  bufferBeforeMinutes Int      @default(0)
+  bufferAfterMinutes  Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  host User @relation(fields: [hostId], references: [id], onDelete: Cascade)
+
+  @@map("event_type")
 }
