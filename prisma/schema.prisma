@@ -29,7 +29,7 @@ model EventType {
   hostId              Int
   title               String
   description         String?
-  durationMinutus     Int
+  durationMinutes     Int
   isActive            Boolean  @default(true)
   locationType        String   @default("Online")
   locationValue       String?
