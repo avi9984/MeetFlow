@@ -1,5 +1,5 @@
 import { prisma } from "../config/db.config.js";
-import { CreateEventTypeDto } from "../dtos/event-type.dto.js";
+import { CreateEventTypeDto, UpdateEventTypeDto } from "../dtos/event-type.dto.js";
 
 
 export async function findByHostId(hostId: number) {
@@ -28,7 +28,7 @@ export async function create(hostId: number, data: CreateEventTypeDto & { slug: 
     return eventType;
 }
 
-export async function update(id: number, data: CreateEventTypeDto) {
+export async function update(id: number, data: UpdateEventTypeDto) {
     const eventType = await prisma.eventType.update({
         where: { id },
         data
