@@ -25,6 +25,7 @@ model User {
   availabilities         AvailabilityRule[]
   availabilityExceptions AvailabilityException[]
   slots                  Slot[]
+  bookings               Booking[]               @relation("HostBookings")
 
   @@map("users")
 }
@@ -44,8 +45,9 @@ model EventType {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  host  User   @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  slots Slot[]
+  host     User      @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  slots    Slot[]
+  bookings Booking[]
 
   @@unique([hostId, slug])
   @@map("event_type")
@@ -63,7 +65,11 @@ model AvailabilityRule {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  slots    Slot[]
+  bookings Booking[]
+
   @@unique([userId, weekday])
+  @@index([userId, weekday])
   @@map("availability_rules")
 }
 
@@ -96,11 +102,39 @@ model Slot {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  host      User      @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  eventType EventType @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  host               User              @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  eventType          EventType         @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  availabilityRule   AvailabilityRule? @relation(fields: [availabilityRuleId], references: [id])
+  availabilityRuleId Int?
+  bookings           Booking[]
 
   @@unique([eventTypeId, startAt, endAt])
   @@index([hostId, startAt])
   @@index([eventTypeId, startAt, status])
   @@map("slots")
+}
+
+model Booking {
+  id              Int       @id @default(autoincrement())
+  hostId          Int
+  eventTypeId     Int
+  slotId          Int
+  inviteeEmail    String
+  inviteeName     String
+  inviteeNotes    String
+  status          String    @default("PENDING")
+  meetLink        String?
+  calendarEventId String?
+  cancelledAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  host               User              @relation("HostBookings", fields: [hostId], references: [id], onDelete: Cascade)
+  eventType          EventType         @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  slot               Slot              @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  availabilityRule   AvailabilityRule? @relation(fields: [availabilityRuleId], references: [id])
+  availabilityRuleId Int?
+
+  @@index([status, inviteeEmail, hostId, createdAt])
+  @@map("bookings")
 }
