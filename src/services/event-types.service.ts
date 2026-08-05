@@ -1,7 +1,9 @@
 import slug from "slug";
 import { CreateEventTypeDto } from "../dtos/event-type.dto.js";
-import { create, deleteById, findByHostId, getById, slugExistsForHost } from "../repositories/event.type.repository.js";
+import { create, deleteById, findActiveByHostIdAndEventSlug, findByHostId, getById, slugExistsForHost } from "../repositories/event.type.repository.js";
 import { conflict, forbidden, notFound } from "../utils/api-error.js";
+import { findById as getUserById } from "../repositories/user.repository.js";
+
 
 
 
@@ -48,3 +50,27 @@ export async function getEventTypeById(id: number, hostId: number) {
     return eventType;
 }
 
+export async function getEvnetTypePublic(hostId: number, evnetSlug: string) {
+    const eventType = await findActiveByHostIdAndEventSlug(hostId, evnetSlug);
+    if (!eventType) {
+        throw notFound('Event type not found');
+    }
+    const host = await getUserById(hostId);
+
+    if (!host) {
+        throw notFound('Host not found');
+    }
+    return {
+        eventType: {
+            id: eventType.id,
+            title: eventType.title,
+            description: eventType.description,
+            durationMinutes: eventType.durationMinutes,
+            locationType: eventType.locationType
+        },
+        host: {
+            name: host.name,
+            email: host.email
+        }
+    }
+}
