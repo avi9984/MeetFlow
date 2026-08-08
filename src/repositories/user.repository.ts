@@ -1,4 +1,3 @@
-import { slugify } from "zod";
 import { prisma } from "../config/db.config.js";
 import { CreateUserDto, UpdateUserDto } from "../dtos/user.dto.js";
 
