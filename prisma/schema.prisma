@@ -57,6 +57,7 @@ model AvailabilityRule {
   id        Int      @id @default(autoincrement())
   userId    Int
   weekday   Int
+  isActive  Boolean  @default(true)
   startTime String // "HH:MM"
   endTime   String // "HH:MM"
   timezone  String   @default("UTC")
