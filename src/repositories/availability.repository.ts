@@ -115,3 +115,23 @@ export async function findExceptionsByUserInRange(userId: number, startDate: Dat
     });
     return exceptions;
 }
+
+// write a function to check if a slug already exists for a user 
+export async function slugExistsForHost(hostId: number, slug: string) {
+    const exists = await prisma.eventType.findFirst({
+        where: {
+            hostId,
+            slug,
+        }
+    })
+    return exists !== null;
+}
+
+export async function findActiveEventTypesByHost(hostId: number) {
+    return prisma.eventType.findMany({
+        where: {
+            hostId,
+            isActive: true
+        }
+    })
+}
