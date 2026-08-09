@@ -1,4 +1,5 @@
 import {
+    CreateAvailabilityExceptionDto,
     CreateAvailabilityRuleDto,
     UpdateAvailabilityRuleDto,
 } from "../dtos/availability.dto.js";
@@ -8,6 +9,7 @@ import {
     createRule as createRuleInDb,
     updateRule as updateRuleInDb,
     removeRule as removeRuleInDb,
+    findExceptionsByUser,
 } from "../repositories/availability.repository.js";
 import { forbidden, notFound } from "../utils/api-error.js";
 
@@ -45,4 +47,9 @@ export async function updateRule(id: number, userId: number, data: UpdateAvailab
     }
 
     return updateRuleInDb(id, data);
+}
+
+
+export async function listExceptions(userId: number) {
+    return findExceptionsByUser(userId);
 }
