@@ -22,6 +22,18 @@ export const createAvailabilityExceptionSchema = z.object({
     endTime: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/, "End time must be in HH:MM format").optional().nullable(),
     timezone: z.string().default("UTC"),
     reason: z.string().optional().nullable(),
+}).superRefine((data, ctx) => {
+    if (data.type !== 'BLOCK_FULL_DAY') {
+        if (!data.startTime) {
+            ctx.addIssue({ path: ['startTime'], code: 'custom', message: 'Start time is required for a non-full day expetion' })
+        }
+        if (!data.endTime) {
+            ctx.addIssue({ path: ['endTime'], code: 'custom', message: 'End time is required for a non-full day expetion' })
+        }
+        if (data.startTime && data.endTime && data.startTime >= data.endTime) {
+            ctx.addIssue({ path: ['startTime', 'endTime'], code: 'custom', message: 'start time must be before end time' });
+        }
+    }
 });
 
 export const updateAvailabilityExceptionSchema = createAvailabilityExceptionSchema.partial();
