@@ -17,7 +17,7 @@ export type UpdateAvailabilityRuleDto = z.infer<typeof updateAvailabilityRuleSch
 // Availability Exception Schemas
 export const createAvailabilityExceptionSchema = z.object({
     date: z.string().regex(/^(?:\d{4}-\d{2}-\d{2})$/, "Date must be in YYYY-MM-DD format").transform((val) => new Date(val)),
-    type: z.string().min(1, "Type is required"),
+    type: z.enum(["BLOCK_FULL_DAY", "BLOCK_PARTIAL", "ADD_AVAILABLE_WINDOW"]),
     startTime: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/, "Start time must be in HH:MM format").optional().nullable(),
     endTime: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/, "End time must be in HH:MM format").optional().nullable(),
     timezone: z.string().default("UTC"),
