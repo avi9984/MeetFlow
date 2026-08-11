@@ -67,7 +67,7 @@ export async function createException(userId: number, data: CreateAvailabilityEx
         data: {
             userId,
             ...rest,
-            date: new Date(`${date}T00:00:00.000Z`),
+            date,
         },
     });
 }
@@ -78,7 +78,7 @@ export async function updateException(id: number, data: UpdateAvailabilityExcept
         where: { id },
         data: {
             ...rest,
-            ...(date !== undefined && { date: new Date(`${date}T00:00:00.000Z`) }),
+            ...(date !== undefined && { date }),
         },
     });
 }

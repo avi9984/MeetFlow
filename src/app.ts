@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import { userRouter } from './routers/user.router.js';
 import { eventTypeRouter } from './routers/event-type.router.js';
 import { publicRouter } from './routers/public.router.js';
+import { availabilityRouter } from './routers/availability.router.js';
 import { errorHandler } from './middlewares/error-handler.js';
 import { routeNotFound } from './middlewares/route-not-found.js';
 
@@ -19,6 +20,7 @@ app.get('/helth', (_req, res) => {
 app.use('/api/users', userRouter);
 app.use('/api/event-types', eventTypeRouter);
 app.use('/api/public', publicRouter);
+app.use('/api/availability', availabilityRouter);
 
 app.use(routeNotFound);
 app.use(errorHandler);
