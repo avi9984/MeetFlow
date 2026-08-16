@@ -39,7 +39,9 @@ export async function removeEventType(hostId: number, id: number) {
     if (eventType.hostId !== hostId) {
         throw forbidden('You are not authorized to delete this event type');
     }
-    return deleteById(id);
+    const removedEventType = await deleteById(id);
+    await startRegenerateHostSlotsWorkflow({ hostId });
+    return removedEventType;
 }
 
 export async function getEventTypeById(id: number, hostId: number) {
@@ -96,6 +98,8 @@ export async function updateEventType(hostId: number, id: number, data: UpdateEv
         }
     }
 
-    return update(id, data);
+    const updateEventType = await update(id, data);
+    await startRegenerateHostSlotsWorkflow({ hostId });
+    return updateEventType;
 }
 
