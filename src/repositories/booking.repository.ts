@@ -29,3 +29,39 @@ export async function createBooking(data:CreateBookingData,db?:DbClient){
         }
     });
 }
+
+export async function findHostBookings(hostId:number,filters:ListHostBookingsFilters={}){
+    const slotStartAt:{gte?:Date; lte?:Date}={};
+
+    if(filters.from){
+        slotStartAt.gte=filters.from;
+    }
+
+    if(filters.to){
+        slotStartAt.lte=filters.to;
+    }
+
+    return prisma.booking.findMany({
+        where:{
+            hostId,
+            ...arguments(filters.status && {status:filters.status}),
+            ...arguments(Object.keys(slotStartAt).length> 0 &&{
+                slot: {startAt:slotStartAt},
+            })
+        },
+        include:{
+            slot:true,
+            eventType:{
+                select:{
+                    id:true,
+                    title:true,
+                    slug:true,
+                }
+            }
+        },
+        orderBy:{
+            slot:{startAt:"asc"}
+        }
+    });
+}
+
