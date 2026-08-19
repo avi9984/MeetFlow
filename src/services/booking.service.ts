@@ -1,7 +1,7 @@
 
 import { prisma } from "../config/db.config.js";
 import { DateTime } from "luxon";
-import { startRegenerateHostSlotsWorkflow } from "../temporal/client.js";
+import { startRegenerateHostSlotsWorkflow, startSendBookingConfirmationEmailWorkflow } from "../temporal/client.js";
 import { Slot } from "../../generated/prisma/client.js";
 import { badRequest, notFound } from "../utils/api-error.js";
 import { CreateBookingDto, ListHostBookingsQuery } from "../dtos/booking.dto.js";
@@ -56,14 +56,14 @@ function formatBookingResponse(booking: {
 }
 
 async function postBookingActions(hostId: number, booking: {
-    id: number,
-    status: string,
-    slot: { startAt: Date, endAt: Date }
+    id: number;
+    status: string;
+    slot: { startAt: Date; endAt: Date };
 }) {
     await triggerSlotRegen(hostId, booking.slot.startAt);
-    // await startSendBoo
+    await startSendBookingConfirmationEmailWorkflow(booking.id);
 
-    return formatBookingResponse(booking);
+    return formatBookingResponse(booking)
 }
 
 export async function createBookingOptimistically(userId: number, dto: CreateBookingDto) {
