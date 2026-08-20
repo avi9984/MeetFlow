@@ -10,7 +10,8 @@
     "prisma:migrate": "pnpm prisma migrate dev",
     "prisma:generate": "pnpm prisma generate",
     "prisma:all": "pnpm prisma format && pnpm prisma migrate dev && pnpm prisma generate",
-    "prisma:studio": "pnpm prisma studio"
+    "prisma:studio": "pnpm prisma studio",
+    "google:setup":"tsx src/utils/google-setup.ts"
   },
   "keywords": [],
   "author": "",
