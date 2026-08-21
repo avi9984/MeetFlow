@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { list, getById, create, update, remove } from "../controllers/event-type.controllers.js";
+import { list, getById, create, update, remove } from "../controllers/event-type.controller.js";
 import { validate } from "../middlewares/validate.js";
 import { createEventTypeSchema, UpdateEventTypeSchema } from "../dtos/event-type.dto.js";
 import { requireUserId } from "../middlewares/require-user-id.js";
