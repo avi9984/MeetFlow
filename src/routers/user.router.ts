@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, getAllUsers, getUserById, updateUser, deleteUser } from "../controllers/user.controllers.js";
+import { createUser, getAllUsers, getUserById, updateUser, deleteUser } from "../controllers/user.controller.js";
 import { validate } from "../middlewares/validate.js";
 import { createUserSchema, updateUserSchema } from "../dtos/user.dto.js";
 
