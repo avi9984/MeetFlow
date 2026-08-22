@@ -22,7 +22,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   eventTypes             EventType[]
-  availabilities         AvailabilityRule[]
+  availabilityRules      AvailabilityRule[]
   availabilityExceptions AvailabilityException[]
   slots                  Slot[]
   bookings               Booking[]               @relation("HostBookings")
@@ -30,36 +30,38 @@ model User {
   @@map("users")
 }
 
+// A user has many event types and an event type belongs to a user (one to many)
 model EventType {
   id                  Int      @id @default(autoincrement())
   hostId              Int
   title               String
-  slug                String
   description         String?
+  slug                String
   durationMinutes     Int
   isActive            Boolean  @default(true)
-  locationType        String   @default("Online")
+  locationType        String   @default("online")
   locationValue       String?
   bufferBeforeMinutes Int      @default(0)
   bufferAfterMinutes  Int      @default(0)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  host     User      @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  host User @relation(fields: [hostId], references: [id], onDelete: Cascade)
+
   slots    Slot[]
   bookings Booking[]
 
   @@unique([hostId, slug])
-  @@map("event_type")
+  @@map("event_types")
 }
 
 model AvailabilityRule {
   id        Int      @id @default(autoincrement())
   userId    Int
   weekday   Int
+  startTime String
+  endTime   String
   isActive  Boolean  @default(true)
-  startTime String // "HH:MM"
-  endTime   String // "HH:MM"
   timezone  String   @default("UTC")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -69,7 +71,6 @@ model AvailabilityRule {
   slots    Slot[]
   bookings Booking[]
 
-  @@unique([userId, weekday])
   @@index([userId, weekday])
   @@map("availability_rules")
 }
@@ -93,21 +94,22 @@ model AvailabilityException {
 }
 
 model Slot {
-  id          String   @id @default(cuid())
-  hostId      Int
-  eventTypeId Int
-  startAt     DateTime
-  endAt       DateTime
-  status      String   @default("AVAILABLE")
+  id                 String   @id @default(cuid())
+  hostId             Int
+  eventTypeId        Int
+  startAt            DateTime
+  endAt              DateTime
+  status             String   @default("AVAILABLE")
+  availabilityRuleId Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  host               User              @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  eventType          EventType         @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
-  availabilityRule   AvailabilityRule? @relation(fields: [availabilityRuleId], references: [id])
-  availabilityRuleId Int?
-  bookings           Booking[]
+  host             User              @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  eventType        EventType         @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  availabilityRule AvailabilityRule? @relation(fields: [availabilityRuleId], references: [id])
+
+  bookings Booking[]
 
   @@unique([eventTypeId, startAt, endAt])
   @@index([hostId, startAt])
@@ -116,26 +118,28 @@ model Slot {
 }
 
 model Booking {
-  id              Int       @id @default(autoincrement())
-  hostId          Int
-  eventTypeId     Int
-  slotId          String
-  inviteeEmail    String
-  inviteeName     String
-  inviteeNotes    String
-  status          String    @default("PENDING")
-  meetLink        String?
-  calendarEventId String?
-  cancelledAt     DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
-  host               User              @relation("HostBookings", fields: [hostId], references: [id], onDelete: Cascade)
-  eventType          EventType         @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
-  slot               Slot              @relation(fields: [slotId], references: [id], onDelete: Cascade)
-  availabilityRule   AvailabilityRule? @relation(fields: [availabilityRuleId], references: [id])
+  id                 Int       @id @default(autoincrement())
+  hostId             Int
+  eventTypeId        Int
+  slotId             String
+  inviteeEmail       String
+  inviteeNotes       String?
+  inviteeName        String
+  status             String    @default("PENDING")
+  meetLink           String?
+  calendarEventId    String?
+  cancelledAt        DateTime?
   availabilityRuleId Int?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
-  @@index([status, inviteeEmail, hostId, createdAt])
+  host             User              @relation("HostBookings", fields: [hostId], references: [id], onDelete: Cascade)
+  eventType        EventType         @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  slot             Slot              @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  availabilityRule AvailabilityRule? @relation(fields: [availabilityRuleId], references: [id])
+
+  @@index([status])
+  @@index([inviteeEmail])
+  @@index([hostId, createdAt])
   @@map("bookings")
 }
