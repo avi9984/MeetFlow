@@ -3,7 +3,7 @@ import "dotenv/config";
 export const PORT = process.env.PORT || 3000;
 export const DATABASE_URL = process.env.DATABASE_URL || '';
 export const NODE_DEV: string = process.env.NODE_DEV || 'development';
-export const SLOT_GENERATION_DAYS = Number(process.env.SLOT_GENERATION_DAYS || 14);
+export const SLOT_GENERATION_DAYS = Number(process.env.SLOT_GENERATION_DAYS || 30);
 
 export const TEMPORAL_ADDRESS = process.env.TEMPORAL_ADDRESS || 'localhost:7233';
 export const TEMPORAL_NAMESPACE = process.env.TEMPORAL_NAMESPACE || 'default';
@@ -21,5 +21,8 @@ export const EMAIL_FROM = process.env.EMAIL_FROM || 'Meetflow <noreply@example.c
 
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+export const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || 'primary';
 export const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || '';
 export const GOOGLE_SENDER_EMAIL = process.env.GOOGLE_SENDER_EMAIL || 'info@example.com';
+export const GOOGLE_REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN || '';
+// console.log("GOOGLE_REFRESH_TOKEN", GOOGLE_REFRESH_TOKEN);
