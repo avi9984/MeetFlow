@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { badRequest } from "../utils/api-error.js";
-import { exchangeSetUpCode } from "../services/google-calender.service.js";
+import { exchangeSetupCode } from "../services/google-calender.service.js";
 
 
 export const setupGoogleCallback = async (req: Request, res: Response) => {
@@ -9,7 +9,7 @@ export const setupGoogleCallback = async (req: Request, res: Response) => {
 
     if (!code) throw badRequest('No code provided');
 
-    const { refreshToken, email } = await exchangeSetUpCode(code);
+    const { refreshToken, email } = await exchangeSetupCode(code);
 
     res.status(200).json({
         success: true,
