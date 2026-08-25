@@ -14,6 +14,22 @@ export interface CreateBookingData {
     inviteeNotes?: string;
     hostId: number;
     eventTypeId: number;
+    availabilityRuleId?: number | null;
+}
+
+export interface ListHostBookingsFilters {
+    status?: string;
+    from?: Date;
+    to?: Date;
+}
+
+export interface CreateBookingData {
+    slotId: string;
+    inviteeEmail: string;
+    inviteeName: string;
+    inviteeNotes?: string;
+    hostId: number;
+    eventTypeId: number;
 }
 
 export async function createBooking(data: CreateBookingData, db?: DbClient) {
@@ -22,12 +38,11 @@ export async function createBooking(data: CreateBookingData, db?: DbClient) {
     return client.booking.create({
         data: {
             ...data,
-            inviteeNotes: data.inviteeNotes ?? "",
             status: "CONFIRMED",
         },
         include: {
             slot: true,
-        }
+        },
     });
 }
 
@@ -48,7 +63,7 @@ export async function findHostBookings(hostId: number, filters: ListHostBookings
             ...(filters.status && { status: filters.status }),
             ...(Object.keys(slotStartAt).length > 0 && {
                 slot: { startAt: slotStartAt },
-            })
+            }),
         },
         include: {
             slot: true,
@@ -57,14 +72,15 @@ export async function findHostBookings(hostId: number, filters: ListHostBookings
                     id: true,
                     title: true,
                     slug: true,
-                }
-            }
+                },
+            },
         },
         orderBy: {
-            slot: { startAt: "asc" }
-        }
+            slot: { startAt: "asc" },
+        },
     });
 }
+
 
 export async function findBookingById(bookingId: number) {
     return prisma.booking.findUnique({
@@ -72,8 +88,8 @@ export async function findBookingById(bookingId: number) {
         include: {
             slot: true,
             eventType: true,
-            host: true
-        }
+            host: true,
+        },
     });
 }
 
@@ -86,6 +102,6 @@ export async function updateBookingCalendarDetails(
 
     return client.booking.update({
         where: { id: bookingId },
-        data
-    })
+        data,
+    });
 }
