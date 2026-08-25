@@ -10,6 +10,7 @@ export async function sendBookingConfirmationEmail(bookingId: number) {
     await sendEmail(booking.inviteeEmail, `Booking Confirmation : ${bookingId}`, `
         <p>Hello ${booking.inviteeName},</p>
         <p>Your booking for ${booking.eventType.title} on ${when} has been confirmed.</p>
+        ${booking.meetLink ? `<p>Join with Google Meet: <a href="${booking.meetLink}">${booking.meetLink}</a></p>` : ''}
         <p>Thank you for booking with us.</p>
     `);
 }
