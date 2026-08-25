@@ -22,7 +22,8 @@ export async function upsertAvailableSlot(
     hostId: number,
     eventTypeId: number,
     startAt: Date,
-    endAt: Date
+    endAt: Date,
+    availabilityRuleId?: number
 ) {
     return prisma.slot.upsert({
         where: {
@@ -38,9 +39,11 @@ export async function upsertAvailableSlot(
             startAt,
             endAt,
             status: "AVAILABLE",
+            availabilityRuleId
         },
         update: {
-            status: "AVAILABLE"
+            status: "AVAILABLE",
+            availabilityRuleId
         },
     });
 };
