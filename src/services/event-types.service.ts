@@ -11,6 +11,7 @@ import { startRegenerateHostSlotsWorkflow } from "../temporal/client.js";
 
 export async function listEventType(hostId: number) {
     const eventType = await findByHostId(hostId);
+    console.log("eventType", eventType);
     return eventType;
 }
 
