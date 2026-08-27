@@ -82,7 +82,8 @@ export async function createBookingOptimistically(userId: number, dto: CreateBoo
             inviteeName: dto.inviteeName,
             inviteeNotes: dto.inviteeNotes,
             hostId: userId,
-            eventTypeId: slot.eventTypeId
+            eventTypeId: slot.eventTypeId,
+            availabilityRuleId: slot.availabilityRuleId
         },
             tx
         );
@@ -108,7 +109,8 @@ export async function createBookingPessimistically(userId: number, dto: CreateBo
             inviteeName: dto.inviteeName,
             inviteeNotes: dto.inviteeNotes,
             hostId: userId,
-            eventTypeId: slot.eventTypeId
+            eventTypeId: slot.eventTypeId,
+            availabilityRuleId: slot.availabilityRuleId
         },
             tx
         );
