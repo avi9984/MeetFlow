@@ -4,6 +4,7 @@ import { DateTime, Interval } from "luxon";
 export interface TimeWindow {
     start: DateTime;
     end: DateTime;
+    ruleId?: number;
 }
 
 /**
@@ -74,7 +75,7 @@ export function splitIntoSlots(
             const slotStart = cursor.plus({ minutes: bufferBeforeMinutes });
             const slotEnd = slotStart.plus({ minutes: durationMinutes });
 
-            slots.push({ start: slotStart, end: slotEnd });
+            slots.push({ start: slotStart, end: slotEnd, ruleId: window.ruleId });
 
             cursor = cursor.plus({ minutes: durationMinutes });
         }
@@ -94,7 +95,10 @@ export function subtractWindows(windows: TimeWindow[], block: TimeWindow): TimeW
             continue;
         }
         if (block.start > window.start) {
-            result.push({ start: window.start, end: window.end });
+            result.push({ start: window.start, end: block.start, ruleId: window.ruleId });
+        }
+        if (block.end < window.end) {
+            result.push({ start: block.end, end: window.end, ruleId: window.ruleId });
         }
     }
     return result.filter(w => w.end >= w.start); // drop zero length intervals
@@ -157,7 +161,8 @@ export function windowsForWeekdayRule(
     weekday: number,
     startTime: string,
     endTime: string,
-    timezone: string
+    timezone: string,
+    ruleId?: number
 ): TimeWindow[] {
 
     const localDate = date.setZone(timezone).startOf('day');
@@ -170,5 +175,5 @@ export function windowsForWeekdayRule(
 
     if (!start.isValid || !end.isValid || start >= end) return [];
 
-    return [{ start, end }];
+    return [{ start, end, ruleId }];
 }
