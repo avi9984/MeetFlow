@@ -66,7 +66,7 @@ export async function regenerateHostSlots(input: RegenerateHostSlotsInput) {
             // convert rules into time windows -> compatible with luxon
 
             for (const rule of rules) {
-                windows.push(...windowsForWeekdayRule(cursor, rule.weekday, rule.startTime, rule.endTime, rule.timezone));
+                windows.push(...windowsForWeekdayRule(cursor, rule.weekday, rule.startTime, rule.endTime, rule.timezone, rule.id));
 
             }
             // apply exceptions to the windows
@@ -90,7 +90,7 @@ export async function regenerateHostSlots(input: RegenerateHostSlotsInput) {
 
                 generatedValidSlotKeys.add(key);
 
-                await upsertAvailableSlot(input.hostId, eventType.id, startAt, endAt);
+                await upsertAvailableSlot(input.hostId, eventType.id, startAt, endAt, slot.ruleId);
             }
         }
 
